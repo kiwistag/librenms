@@ -1,0 +1,1278 @@
+BAICELLS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	OBJECT-GROUP, NOTIFICATION-GROUP			FROM SNMPv2-CONF			
+	enterprises, Integer32, IpAddress, 
+	OBJECT-TYPE, MODULE-IDENTITY, 
+	OBJECT-IDENTITY, Unsigned32,
+	NOTIFICATION-TYPE							FROM SNMPv2-SMI			
+	TEXTUAL-CONVENTION,DisplayString, 
+	RowStatus									FROM SNMPv2-TC;
+
+baicellsMib MODULE-IDENTITY
+	LAST-UPDATED	"201811121926Z"
+	ORGANIZATION	"Baicells"
+	CONTACT-INFO	"maiopei@baicells.com"
+	DESCRIPTION		""
+	REVISION		"201811121926Z"
+	::= { enterprises 53058 }
+
+--
+-- Basic Setting
+--
+basicSetting OBJECT IDENTIFIER ::= { baicellsMib 100 }
+
+productType OBJECT-TYPE
+    SYNTAX		DisplayString
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 1 }
+
+hardwareVersion OBJECT-TYPE
+    SYNTAX		DisplayString
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 2 }
+
+softwareVersion OBJECT-TYPE
+    SYNTAX		DisplayString
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 3 }
+
+sn OBJECT-TYPE
+    SYNTAX		DisplayString
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 4 }
+
+cellStatus OBJECT-TYPE
+    SYNTAX		DisplayString
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 5 }
+	
+bandClass OBJECT-TYPE
+    SYNTAX		Integer32
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 6 }
+
+carrierBwMhz OBJECT-TYPE
+    SYNTAX		Integer32 {
+                    1-4MHz      (6),
+                    3MHz        (15),
+                    5MHz        (25),
+                    10MHz       (50),
+                    15MHz       (75),
+                    20MHz       (100)
+                }
+	MAX-ACCESS	read-write    
+    STATUS		current
+    DESCRIPTION "Get/Set carrierBwMhz:
+                6-[1.4MHz]
+                15-[3MHz]
+                25-[5MHz]
+                50-[10MHz]
+                75-[15MHz]
+                100-[20MHz]
+    "
+    ::= { basicSetting 7 }
+
+earfcn OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..65535))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 8 }           
+	
+ueConnections OBJECT-TYPE   
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 11 }
+
+pci OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..503))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 12 } 
+
+cellID OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..268435455))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 13 } 
+
+plmn OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (5..6))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 14 } 
+
+tac OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..65535))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 15 } 
+
+subFrameAssignment OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..6))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 16 } 
+
+specialSubframePatterns OBJECT-TYPE   
+	SYNTAX		Integer32 (SIZE (0..8))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 17 } 
+
+mmeIP OBJECT-TYPE
+	SYNTAX		IpAddress
+    MAX-ACCESS	read-write
+    STATUS		current
+    DESCRIPTION ""
+    ::= { basicSetting 18 }
+
+s1ConnectionMode OBJECT-TYPE
+	SYNTAX		Integer32 {
+					one		(0), -- xxx 
+					all		(1)  -- xxx
+				}
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION "Get/Set S1 Connection mode:
+				0-[One],
+				1-[All]"  
+	::= { basicSetting 19 } 
+
+duplexMode OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					TDDMode		(0),
+					FDDMode		(1)
+				} 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 20 } 
+
+s1LinkStatus OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					LinkDown	(0),
+					LinkUp      (1)
+				} 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION ""  
+	::= { basicSetting 21 } 
+
+
+--
+-- System
+--
+system OBJECT IDENTIFIER ::= { baicellsMib 110 }
+
+ntpServer1 OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { system 1 } 
+
+ntpServer2 OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { system 2 } 
+
+ntpServer3 OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255))
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { system 3 } 
+
+curentVersion OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { system 4 } 
+
+previousVersion OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { system 5 }	
+
+--
+-- Network
+--
+network OBJECT IDENTIFIER ::= { baicellsMib 120 }
+
+macAddress OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { network 1 } 
+
+timeZone OBJECT-TYPE   
+	SYNTAX		DisplayString (SIZE (0..255)) 
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { network 2 }	
+
+--
+-- LTE Setting
+--
+lteSetting OBJECT IDENTIFIER ::= { baicellsMib 140 }
+
+--
+-- LTE Setting: Neigh Freq Table
+--
+neighFreqTable OBJECT-TYPE   
+    SYNTAX		SEQUENCE OF NeighFreqEntry
+    MAX-ACCESS	not-accessible
+    STATUS		current
+    DESCRIPTION ""
+    ::= { lteSetting 1 }
+
+neighFreqEntry OBJECT-TYPE
+    SYNTAX		NeighFreqEntry
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    INDEX		{ neighFreqIndex }
+    ::= { neighFreqTable 1 }
+
+NeighFreqEntry ::= SEQUENCE { 
+		neighFreqIndex				Integer32,
+		neighFreqEarfcn				Integer32,
+		measBandwidthForEarfcn		Integer32,
+		presenceAntennaPort1		Integer32,
+		neighborCellConfig			DisplayString,
+		qOffsetRange				Integer32,
+		qRxLevMinSib5				Integer32,
+		pMax						Integer32,
+		tReselectionEutra			Integer32,
+		tReselectionEutraSFMedium	Integer32,
+		tReselectionEutraSFHigh		Integer32,
+		reselThreshHigh				Integer32,
+		reselThreshLow				Integer32,
+		reselectionPriority			Integer32,
+		qQualMinR9					Integer32,
+		threshxHighqR9				Integer32,
+		cmOffsetFreq				Integer32,
+		threshxLowqR9				Integer32,
+		neighFreqEnable				Integer32,
+		neighFreqRowStatus			RowStatus
+    }
+
+neighFreqIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..7))
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 1 }
+
+neighFreqEarfcn OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..65535))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 2 }
+
+measBandwidthForEarfcn OBJECT-TYPE
+    SYNTAX		Integer32 {
+					mbw6		(6),
+					mbw15		(15),
+					mbw25		(25),
+					mbw50		(50),
+					mbw75		(75),
+					mbw100		(100)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 3 }
+
+presenceAntennaPort1 OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 4 }
+
+neighborCellConfig OBJECT-TYPE
+    SYNTAX		DisplayString (SIZE (2))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION "Set neighborCellConfig permissible value:
+				(00), (01), (10), (11)"
+    ::= { neighFreqEntry 5 }
+
+qOffsetRange OBJECT-TYPE
+    SYNTAX		Integer32 {
+					db-24		(-24),
+					db-22		(-22),
+					db-20		(-20),
+					db-18		(-18),
+					db-16		(-16),
+					db-14		(-14),
+					db-12		(-12),
+					db-10		(-10),
+					db-8		(-8),
+					db-6		(-6),
+					db-5		(-5),
+					db-4		(-4),
+					db-3		(-3),
+					db-2		(-2),
+					db-1		(-1),
+					db0			(0),
+					db1			(1),
+					db2			(2),
+					db3			(3),
+					db4			(4),
+					db5			(5),
+					db6			(6),
+					db8			(8),
+					db10		(10),
+					db12		(12),
+					db14		(14),
+					db16		(16),
+					db18		(18),
+					db20		(20),
+					db22		(22),
+					db24		(24)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 6 }
+
+qRxLevMinSib5 OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (-70..-22))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 7 }
+
+pMax OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (-30..33))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 8 }
+
+tReselectionEutra OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..7))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 9 }
+
+tReselectionEutraSFMedium OBJECT-TYPE
+    SYNTAX		Integer32 {
+					oDot25		(25),
+					oDot5		(50),
+					oDot75		(75),
+					lDot0		(100)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 10 }
+
+tReselectionEutraSFHigh OBJECT-TYPE
+	SYNTAX		Integer32 {
+					oDot25		(25),
+					oDot5		(50),
+					oDot75		(75),
+					lDot0		(100)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 11 }
+
+reselThreshHigh OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..31))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 12 }
+
+reselThreshLow OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..31))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 13 }
+
+reselectionPriority OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..7))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 14 }
+
+qQualMinR9 OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (-34..-3))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 15 }
+
+threshxHighqR9 OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..31))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 16 }
+
+cmOffsetFreq OBJECT-TYPE
+	SYNTAX		Integer32 {
+					db-24		(-24),
+					db-22		(-22),
+					db-20		(-20),
+					db-18		(-18),
+					db-16		(-16),
+					db-14		(-14),
+					db-12		(-12),
+					db-10		(-10),
+					db-8		(-8),
+					db-6		(-6),
+					db-5		(-5),
+					db-4		(-4),
+					db-3		(-3),
+					db-2		(-2),
+					db-1		(-1),
+					db0			(0),
+					db1			(1),
+					db2			(2),
+					db3			(3),
+					db4			(4),
+					db5			(5),
+					db6			(6),
+					db8			(8),
+					db10		(10),
+					db12		(12),
+					db14		(14),
+					db16		(16),
+					db18		(18),
+					db20		(20),
+					db22		(22),
+					db24		(24)
+				}
+
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 17 }
+
+threshxLowqR9 OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0..31))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 18 }
+
+neighFreqEnable OBJECT-TYPE
+    SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighFreqEntry 19 }
+
+neighFreqRowStatus OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION     ""
+    ::= { neighFreqEntry 20 }
+
+--
+-- LTE Setting: Neigh Cell Table
+--
+neighCellTable OBJECT-TYPE   
+    SYNTAX		SEQUENCE OF NeighCellEntry
+    MAX-ACCESS	not-accessible
+    STATUS		current
+    DESCRIPTION ""
+	::= { lteSetting 2 }
+
+neighCellEntry OBJECT-TYPE
+    SYNTAX		NeighCellEntry
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    INDEX		{ neighCellIndex }
+    ::= { neighCellTable 1 }
+
+NeighCellEntry ::= SEQUENCE { 
+		neighCellIndex								Integer32,
+		neighCellPLMN								DisplayString,
+		neighCellCellID								Integer32,
+		neighCellEarfcn								Integer32,
+		neighCellPCI								Integer32,
+		neighCellQOffset							Integer32,
+		neighCellCIO								Integer32,
+		neighCellRsTxPower							Integer32,
+		neighCellBlacklisted						Integer32,
+		neighCellTAC								Integer32,
+		neighCellPrachConfigurationIndex			Integer32,
+		neighCellPrachRootSequenceIndex				Integer32,
+		neighCellPrachZeroCorrelationZoneConfig		Integer32,
+		neighCellPrachFrequencyOffset				Integer32,
+		neighCellPrachHighSpeedFlag					Integer32,
+		neighCellIsPrachConfig						Integer32,
+		neighCellEnable								Integer32,
+		neighCellRowStatus							RowStatus
+    }
+
+neighCellIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..9))
+    MAX-ACCESS	read-only
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 1 }
+
+neighCellPLMN OBJECT-TYPE
+    SYNTAX		DisplayString (SIZE (5..6))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 2 }
+
+neighCellCellID OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..268435455))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 3 }
+
+neighCellEarfcn OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..65535))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 4 }
+
+neighCellPCI OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..503))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 5 }
+
+neighCellQOffset OBJECT-TYPE
+    SYNTAX		Integer32 {
+					db-24		(-24),
+					db-22		(-22),
+					db-20		(-20),
+					db-18		(-18),
+					db-16		(-16),
+					db-14		(-14),
+					db-12		(-12),
+					db-10		(-10),
+					db-8		(-8),
+					db-6		(-6),
+					db-5		(-5),
+					db-4		(-4),
+					db-3		(-3),
+					db-2		(-2),
+					db-1		(-1),
+					db0			(0),
+					db1			(1),
+					db2			(2),
+					db3			(3),
+					db4			(4),
+					db5			(5),
+					db6			(6),
+					db8			(8),
+					db10		(10),
+					db12		(12),
+					db14		(14),
+					db16		(16),
+					db18		(18),
+					db20		(20),
+					db22		(22),
+					db24		(24)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 6 }
+
+neighCellCIO OBJECT-TYPE
+	SYNTAX		Integer32 {
+					db-24		(-24),
+					db-22		(-22),
+					db-20		(-20),
+					db-18		(-18),
+					db-16		(-16),
+					db-14		(-14),
+					db-12		(-12),
+					db-10		(-10),
+					db-8		(-8),
+					db-6		(-6),
+					db-5		(-5),
+					db-4		(-4),
+					db-3		(-3),
+					db-2		(-2),
+					db-1		(-1),
+					db0			(0),
+					db1			(1),
+					db2			(2),
+					db3			(3),
+					db4			(4),
+					db5			(5),
+					db6			(6),
+					db8			(8),
+					db10		(10),
+					db12		(12),
+					db14		(14),
+					db16		(16),
+					db18		(18),
+					db20		(20),
+					db22		(22),
+					db24		(24)
+				}
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 7 }
+
+neighCellRsTxPower OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (-60..50))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 8 }
+
+neighCellBlacklisted OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 9 }
+
+neighCellTAC OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..65535))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 10 }
+
+neighCellPrachConfigurationIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..63))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 11 }
+
+neighCellPrachRootSequenceIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..837))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 12 }
+
+neighCellPrachZeroCorrelationZoneConfig OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..15))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 13 }
+
+neighCellPrachFrequencyOffset OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..94))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 14 }
+
+neighCellPrachHighSpeedFlag OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 15 }
+
+neighCellIsPrachConfig OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 16 }
+
+neighCellEnable OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0 | 1))
+    MAX-ACCESS	read-create
+    STATUS		current
+    DESCRIPTION ""
+    ::= { neighCellEntry 17 }
+
+neighCellRowStatus OBJECT-TYPE
+    SYNTAX          RowStatus
+    MAX-ACCESS      read-create
+    STATUS          current
+    DESCRIPTION     ""
+    ::= { neighCellEntry 18 }
+
+
+--
+-- LTE Setting: Advanced Parameter
+--
+lteSettingAdvanced OBJECT IDENTIFIER ::= { lteSetting 100 }
+
+lteA1RSRPThreshold OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 1 }
+
+lteA2RSRPThreshold OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 2 }
+
+lteA3Offset OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (-30..30))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 3 }
+
+interFreqA5RSRPThreshold1 OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 4 }
+
+interFreqA5RSRPThreshold2 OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 5 }
+
+lteTotalTxPower OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 6 }
+
+lteENodebName OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 7 }
+
+lteRootSequenceIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..837))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION ""
+	::= { lteSettingAdvanced 8 }
+
+lteMinTxPower OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	""
+	::= { lteSettingAdvanced 9 }
+
+lteMaxTxPower OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only
+	STATUS		current
+	DESCRIPTION	""
+	::= { lteSettingAdvanced 10 }
+
+intraFreqANRA3Offset OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (-30..30))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION	""
+	::= { lteSettingAdvanced 11 }
+
+interFreqANRA5RSRPThreshold1 OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION	""
+	::= { lteSettingAdvanced 12 }
+
+interFreqANRA5RSRPThreshold2 OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..97))
+	MAX-ACCESS	read-write
+	STATUS		current
+	DESCRIPTION	""
+	::= { lteSettingAdvanced 13 }
+
+--
+-- OS
+--
+os OBJECT IDENTIFIER ::= { baicellsMib 150 }
+
+cpuUtilization OBJECT-TYPE   
+	SYNTAX		Integer32 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { os 1 }
+
+memoryUsage OBJECT-TYPE   
+	SYNTAX		Integer32 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { os 2 }
+
+diskSpaceUsage OBJECT-TYPE   
+	SYNTAX		Integer32 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { os 3 }
+	
+upTime OBJECT-TYPE   
+	SYNTAX		Integer32 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { os 4 }
+
+--
+-- Alarm
+--
+alarm OBJECT IDENTIFIER ::= { baicellsMib 160 }
+
+numberOfAlarm OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	""  
+	::= { alarm 1 }
+
+currentAlarmList OBJECT IDENTIFIER ::= { alarm 2 }
+
+memoryUsageOverrun OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11111 }
+
+lteRrcSctpAssociationFailure OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11112 }
+
+collidingPciSelected OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11180 }
+
+pciConfusion OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11181 }
+
+temperatureAlarm OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11182 }
+
+cellUnavailable OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11184 }
+
+lossOfSyncSource OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11189 }
+
+ntpSyncFailure OBJECT-TYPE
+	SYNTAX		Integer32 {
+					clear	(0), -- xxx
+					problem	(1)  -- xxx 
+				}
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	"0-[Clear], 1-[Problem]"  
+	::= { currentAlarmList 11191 }
+
+
+--
+-- Location
+--
+location OBJECT IDENTIFIER ::= { baicellsMib 170 }
+
+gpsLATITUDE OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	""  
+	::= { location 3 }
+
+gpsLONGITUDE OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current     
+	DESCRIPTION	""  
+	::= { location 4 }
+
+
+--
+-- Performance
+--
+performance OBJECT IDENTIFIER ::= { baicellsMib 190 }
+
+eRABEstablishSuccessRate OBJECT-TYPE   
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"unit of measurement: %"  
+	::= { performance 3 }
+
+hoSuccInterEnbS1Rate OBJECT-TYPE   
+	SYNTAX		Integer32 
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"Unit of measurement: %"  
+	::= { performance 4 }
+
+hoSuccInterEnbRate OBJECT-TYPE   
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"Unit of measurement: %"  
+	::= { performance 5 }
+
+rrcBuildSuccessRate OBJECT-TYPE   
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"Unit of measurement: %"  
+	::= { performance 6 }
+
+ulThroughput OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"unit of measurement: kBps"  
+	::= { performance 7 }
+
+dlThroughput OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"unit of measurement: kBps"  
+	::= { performance 8 }
+
+ulPrbUtilization OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"unit of measurement: kBps"  
+	::= { performance 9 }
+
+dlPrbUtilization OBJECT-TYPE
+	SYNTAX		Integer32
+	MAX-ACCESS	read-only    
+	STATUS		current       
+	DESCRIPTION	"unit of measurement: kBps"  
+	::= { performance 10 }
+
+--
+-- Additional
+--
+additional OBJECT IDENTIFIER ::= { baicellsMib 260 }
+
+adminSetting OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					deactive	(0), -- xxx
+					active		(1)  -- xxx
+				}
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	"Get/Set Admin Setting: 
+				0-[deactive],  
+				1-[active]"
+	::= { additional 1 }
+
+disableAutoReboot OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					off		(0), -- watchdog off
+					on		(1)  -- watchdog on
+				}
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	"Get/Set Disable Auto Reboot:
+	            0-[watchDog OFF], 
+				1-[watchDog ON]"  
+	::= { additional 2 }
+	
+--
+-- Control
+--
+control OBJECT IDENTIFIER ::= { baicellsMib 270 }
+
+rfOff OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					off		(0), -- rf off
+					on		(1)  -- rf on
+				}
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	"Get/Set RadioControl:
+				0-[RF OFF],
+				1-[RF ON]"  
+	::= { control 1 }
+
+reboot OBJECT-TYPE   
+	SYNTAX		Integer32 {
+					reboot		(1) -- reboot system
+				}
+	MAX-ACCESS	read-write    
+	STATUS		current       
+	DESCRIPTION	"Set Reboot:
+				1-[reboot],
+				others-[do nothing]"  
+	::= { control 2 }
+
+--
+-- Firmware Upgrade
+--
+fwUpgrade OBJECT IDENTIFIER ::= { baicellsMib 280 }
+
+selectionProtocol OBJECT-TYPE
+	SYNTAX		Integer32 {
+					sftp	(0) -- sftp protocol
+				}
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	"Get/Set Firmware Download Protocol: 
+				0-[sftp]"  
+	::= { fwUpgrade 1 }
+
+fwServerIP OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	""  
+	::= { fwUpgrade 2 }
+
+fwServerName OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	""  
+	::= { fwUpgrade 3 }
+
+fwServerPasswd OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	"Set Firmware Server Passwd."  
+	::= { fwUpgrade 4 }
+
+fwServerFilePath OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	""  
+	::= { fwUpgrade 5 }
+
+retaineNBConfiguration OBJECT-TYPE
+	SYNTAX		Integer32 {
+					discard		(0), -- do not keep the configuration
+					keep		(1)  -- keep the configuration
+				}
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	"Get/Set upgrade mode: 
+				0-[do not keep the configuration],  
+				1-[keep the configuration]"
+	::= { fwUpgrade 6 }
+
+startFWUpgrade OBJECT-TYPE
+	SYNTAX		Integer32 {
+					upgrade		(1) -- Start Firmware Upgrade
+				}
+	MAX-ACCESS	read-write 
+	STATUS		current    
+	DESCRIPTION	"Set Start Firmware Upgrade: 
+				1-[Start Firmware Upgrade], 
+				others-[do nothing]"  
+	::= { fwUpgrade 7 }
+
+upgradingFWStatus OBJECT-TYPE
+	SYNTAX		Integer32 {
+					notUpgrade				(0), -- xxx
+					firmwareDownloading		(1), -- xxx
+					downloadingFailed		(2), -- xxx
+					firmwareUpgrading		(3), -- xxx
+					upgradeSuccess			(4), -- xxx
+					upgradeFailed			(5)  -- xxx
+				}
+	MAX-ACCESS	read-only
+	STATUS		current    
+	DESCRIPTION	"Get Upgrading firmware Status: 
+				0-[not upgrade],
+				1-[firmware downloading],
+				2-[downloading failed],
+				3-[firmware upgrading],
+				4-[upgrade success],
+				5-[upgrade failed]"
+	::= { fwUpgrade 8 }
+
+--
+-- SNMP
+--
+snmpSetting OBJECT IDENTIFIER ::= { baicellsMib 290 }
+
+snmpTrapConfig OBJECT IDENTIFIER ::= { snmpSetting 2 }
+
+trapHost OBJECT-TYPE
+	SYNTAX		DisplayString
+	MAX-ACCESS	read-only 
+	STATUS		current    
+	DESCRIPTION	""  
+	::= { snmpTrapConfig 1 }
+
+--
+-- Sync Adjust Parameter
+--
+syncAdjustParameter OBJECT IDENTIFIER ::= { baicellsMib 300 }
+
+gpsSyncAdjust OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (-65535..65535))
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { syncAdjustParameter 1 }
+
+--
+-- Random Access Parameter
+--
+randomAccessParameter OBJECT IDENTIFIER ::= { baicellsMib 310 }
+
+zeroCorrelationZoneConfig OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (1..14))
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { randomAccessParameter 1 }
+
+PrachConfigurationIndex OBJECT-TYPE
+	SYNTAX		Integer32 (SIZE (0..63))
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { randomAccessParameter 2 }
+
+--
+-- Security Setting
+--
+securitySetting OBJECT IDENTIFIER ::= { baicellsMib 320 }
+
+ciperingAlgorithm OBJECT-TYPE
+	SYNTAX		Integer32 {
+					EEA0		(0),
+					128-EEA1	(1),
+					128-EEA2	(2),
+					128-EEA3	(3)
+				}
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { securitySetting 1 }
+
+integrityAlgorithm OBJECT-TYPE
+	SYNTAX		Integer32 {
+					128-EIA1	(0),
+					128-EIA2	(1),
+					128-EIA3	(2)
+				}
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { securitySetting 2 }
+
+--
+-- SON Function Setting
+--
+sonFunctionSetting OBJECT IDENTIFIER ::= { baicellsMib 330 }
+
+pciSelfconfig OBJECT-TYPE
+	SYNTAX		Integer32 {
+					Disable		(0),
+					Enable		(1)
+				}
+	MAX-ACCESS	read-write
+	STATUS		current       
+	DESCRIPTION	""  
+	::= { sonFunctionSetting 1 }
+
+END
